@@ -1,9 +1,9 @@
-# Data Flow
+# Data Flow - Context API
 
 ```js
 //@ts-nocheck
 import React from 'react';
-import { createContext } from 'use-context-selector';
+import { createContext, useContextSelector } from 'use-context-selector';
 
 export const mapDispatchToActions = (dispatch) => (actions) => {
   return Object.entries(actions).reduce((acc, [name, func]: any) => {
@@ -18,7 +18,7 @@ const INITIAL_STATE = {
 
 export const SET_USER = 'GlobalContext/SET_USER';
 
-export const actions = {
+export const actionCreator = {
   setUser: (user) => ({ type: SET_USER, user })
 };
 
@@ -35,23 +35,31 @@ export const globalReducer = (state, action) => {
 
 export const GlobalProvider = ({ children, initialState = INITIAL_STATE }) => {
   const [state, dispatch] = React.useReducer(globalReducer, initialState);
-  const actions = React.useCallback(() => mapDispatchToActions(dispatch)(actions), []);
+  const action = React.useCallback(() => mapDispatchToActions(dispatch)(actionCreator), []);
 
   return (
-    <GlobalContext.Provider value={{ state, actions }}>{children}</GlobalContext.Provider>
+    <GlobalContext.Provider value={{ state, action }}>{children}</GlobalContext.Provider>
   );
+};
+
+export const useGlobalAction = () => {
+  return useContextSelector(GlobalContext, v => v.action);
+};
+
+export const useGlobalSelector = (selector) => {
+  return useContextSelector(GlobalContext, v => selector);
 };
 
 
 /**
- * import { useContextSelector } from 'use-context-selector';
- *
+ * Sample Code
+ * 
  * function SignInDialog() {
- *    cosst user = useContextSelector(GlobalContext, v => v.state.user);
- *    const setUser = useContextSelector(GlobalContext, v => v.actions.setUser);
+ *    cosst user = useGlobalSelector(v => v.state.user);
+ *    const action = useGlobalAction();
  * 
  *    const onSignIn = React.useCallback((user) => {
- *      setUser(user);
+ *      action.setUser(user);
  *    }, []);
  * 
  *    return (...);
