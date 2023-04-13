@@ -1,6 +1,8 @@
-import { RequestError } from '../errors';
+import { RequestError } from './errors';
 
-export const request = (token?: string) => async (url: string, options: RequestInit) => {
+export { RequestError } from './errors';
+
+const request = (token?: string) => async (url: string, options: RequestInit) => {
   const headers = new Headers();
   if (token && token !== 'undefined') headers.append('Authorization', `Bearer ${token}`);
 
@@ -21,3 +23,5 @@ export const request = (token?: string) => async (url: string, options: RequestI
 
   return result;
 };
+
+export default request;

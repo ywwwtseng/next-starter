@@ -3,8 +3,7 @@
 import { makeAutoObservable } from 'mobx';
 import Cookies from 'js-cookie';
 import { AuthService } from '@/services/AuthService';
-import { request } from '@/utils/request';
-import { RequestError } from '@/utils/errors';
+import request, { RequestError } from '@/utils/request';
 import { delay } from '@/utils/common';
 
 export interface IAuthStoreState {

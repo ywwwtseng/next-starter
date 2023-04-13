@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { request } from '.';
+import request from '.';
 
 export default (url: string, options: RequestInit = {}) => {
   const cookieStore = cookies();
