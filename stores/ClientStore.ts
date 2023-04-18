@@ -1,37 +1,51 @@
-'use client';
-
-import { makeAutoObservable } from 'mobx';
-import Cookies from 'js-cookie';
-import { AuthService } from '@/services/AuthService';
+import { 
+  AuthService,
+  UserService
+} from '@/services';
 import request, { RequestError } from '@/utils/request';
+import { makeAutoObservable } from 'mobx';
 import { delay } from '@/utils/common';
 
-export interface IAuthStoreState {
+export interface IClientStoreState {
   token: string | undefined;
 }
 
-export interface IAuthStore extends IAuthStoreState {
+
+export interface IClientStore extends IClientStoreState {
+  authService: AuthService;
+  userService: UserService;
   signIn: () => Promise<void>;
   logout: () => Promise<void>;
   refreshToken: () => Promise<void>;
+  request: (url: string, options?: RequestInit, retryCount?: number) => Promise<any>;
+  getState: () => IClientStoreState;
+  
 }
 
-export class AuthStore implements IAuthStore {
+export class ClientStore implements IClientStore {
   token: string | undefined;
+  authService: AuthService;
+  userService: UserService;
 
-  constructor(initialState: IAuthStoreState) {
+  constructor(initialState: IClientStoreState) {
     makeAutoObservable(this);
 
-    this.token = typeof window === 'undefined' ? initialState.token : Cookies.get('token');
+    this.token = initialState.token || undefined;
+    this.authService = new AuthService();
+    this.userService = new UserService(this);
   }
 
-  setToken(token: string | undefined) {
+  getState = (): IClientStoreState => {
+    return { token: this.token }
+  }
+
+  setToken = (token: string | undefined) => {
     this.token = token;
   }
 
-  async signIn() {
+  signIn = async () => {
     try {
-      const res: APIResponse = await AuthService.signIn();
+      const res: APIResponse = await this.authService.signIn();
 
       if (res.result === 'ok') {
         this.setToken(res.data.access_token);
@@ -44,7 +58,7 @@ export class AuthStore implements IAuthStore {
 
   async refreshToken() {
     try {
-      const res: APIResponse = await AuthService.memoizedRefreshToken();
+      const res: APIResponse = await this.authService.memoizedRefreshToken();
 
       if (res.result === 'ok') {
         this.setToken(res.data.access_token);
@@ -57,7 +71,7 @@ export class AuthStore implements IAuthStore {
 
   async logout() {
     try {
-      const res: APIResponse = await AuthService.logout();
+      const res: APIResponse = await this.authService.logout();
 
       if (res.result === 'ok') {
         this.setToken(undefined);
@@ -68,14 +82,14 @@ export class AuthStore implements IAuthStore {
     }
   }
 
-  request = async (url: string, options: RequestInit = {}, retryCount: number = 0): Promise<APIResponse> => {
+  request = async (url: string, options: RequestInit = {}, retryCount: number = 0): Promise<any> => {
     const isExpiredAccessToken = false;
     try {
       if (isExpiredAccessToken) {
         await this.refreshToken();
       }
 
-      const res: APIResponse = await request(this.token)(url, options);
+      const res: any = await request(this.token)(url, options);
       return res;
     } catch (unKnownError) {
       const error = unKnownError as RequestError;

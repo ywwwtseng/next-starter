@@ -1,17 +1,17 @@
 'use client';
 
 import React from 'react';
-import { AuthStore, IAuthStoreState } from './AuthStore';
+import { ClientStore, IClientStoreState } from './ClientStore';
 
 interface Props {
   children: (stores: any) => React.ReactNode
   initialState: {
-    auth: IAuthStoreState
+    client: IClientStoreState
   }
 }
 
 interface Stores {
-  auth?: AuthStore
+  client?: ClientStore
 }
 
 export const StoreContext = React.createContext<Stores>({});
@@ -19,7 +19,7 @@ StoreContext.displayName = 'StoreContext';
 
 export const StoreProvider = ({ children, initialState }: Props) => {
   const stores = {
-    auth: new AuthStore(initialState.auth)
+    client: new ClientStore(initialState.client)
   };
 
 

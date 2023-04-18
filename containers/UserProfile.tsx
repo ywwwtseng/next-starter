@@ -1,29 +1,33 @@
 'use client';
 
 import React from 'react';
-import useSWR from 'swr';
-import { genURL } from '@/utils/swr';
-import { API_URL } from '@/constants';
+import useSWR, { useSWRConfig } from 'swr';
+import { observer } from 'mobx-react-lite';
 import { StoreContext} from '@/stores';
-import { IAuthStore } from '@/stores/AuthStore';
+import { IClientStore } from '@/stores/ClientStore';
 import UserProfileName from '@/components/UserProfileName';
+import { SWR_CACHE_KEY } from '@/constants/swr';
 
-interface Props {
-  uid: number
-}
 
-const UserProfile = ({ uid }: Props) => {
-  const { auth } = React.useContext(StoreContext) as { auth: IAuthStore };
-  const { data } = useSWR(genURL(API_URL, uid));
-  const { data: user } = useSWR(genURL('/api/user', '?uid=', uid));
+const UserProfile = observer(() => {
+  const { client } = React.useContext(StoreContext) as { client: IClientStore };
+  const { data: me } = useSWR(client.token ? SWR_CACHE_KEY.ME : null, client.userService.fetchMeProfile);
+  const { data: user1 } = useSWR(client.token ? [SWR_CACHE_KEY.USERS, 1] : null, ([,id]) => client.userService.fetchUserById(id));
+  const { data: user2 } = useSWR(client.token ? [SWR_CACHE_KEY.USERS, 2] : null, ([,id]) => client.userService.fetchUserById(id));
+  const { mutate, cache } = useSWRConfig();
+
+  const revalidate = () => {
+    mutate(SWR_CACHE_KEY.ME);
+  };
 
   return (
     <div>
-      <button onClick={() => auth.signIn()}>Sign In</button>
-      <button onClick={() => auth.logout()}>Logout</button>
-      <UserProfileName name={data?.name} />
+      {me && <UserProfileName name={me.name} />}
+      {user1 && <UserProfileName name={user1.name} />}
+      {user2 && <UserProfileName name={user2.name} />}
+      <button onClick={revalidate}>Revalidate</button>
     </div>
   );
-};
+});
 
 export default UserProfile;

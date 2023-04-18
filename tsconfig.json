@@ -23,6 +23,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "stores/AuthStore.jx", "stores/AuthStore.jx", "app/providers.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "stores/ClientStore.jx", "stores/ClientStore.jx", "app/providers.tsx"],
   "exclude": ["node_modules"]
 }
