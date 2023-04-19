@@ -2,8 +2,7 @@
 
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import { StoreContext} from '@/stores';
-import { IClientStore } from '@/stores/ClientStore';
+import { StoreContext, IClientStore } from '@/stores';
 
 const AuthActions = observer(() => {
   const { client } = React.useContext(StoreContext) as { client: IClientStore };

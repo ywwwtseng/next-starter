@@ -24,7 +24,7 @@ export interface IClientStore extends IClientStoreState {
   authService: AuthService | null
   userService: UserService | null
   productService: ProductService | null
-  request: (url: string, options?: RequestInit, retryCount?: number) => Promise<any>
+  request: (url: string, options?: RequestInit) => Promise<any>
   setToken: (token: string | undefined) => void
   getState: () => IClientStoreState
   
@@ -58,7 +58,7 @@ export class ClientStore implements IClientStore {
     this.token = token;
   }
 
-  request = async (url: string, options: RequestInit = {}): Promise<any> => {
+  request = async (url: string, options?: RequestInit): Promise<any> => {
     return retry(
       { 
         errorRetryCount: this.errorRetryCount,

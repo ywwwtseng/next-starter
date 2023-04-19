@@ -34,7 +34,7 @@ export const retry = ({errorRetryCount, errorRetryInterval = 1000, _retryCount =
   return res;
 }
 
-const request = (token?: string) => async (url: string, options: RequestInit): Promise<any> => {
+const request = (token?: string) => async (url: string, options: RequestInit = {}): Promise<any> => {
   const headers = new Headers();
   if (token && token !== 'undefined') headers.append('Authorization', `Bearer ${token}`);
 

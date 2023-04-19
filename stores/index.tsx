@@ -2,7 +2,9 @@
 
 import React from 'react';
 import { isServer } from '@/utils/common';
-import { ClientStore, IClientStoreState } from './ClientStore';
+import { ClientStore, IClientStore, IClientStoreState } from './ClientStore';
+
+export type { IClientStore };
 
 interface Props {
   children: (stores: any) => React.ReactNode

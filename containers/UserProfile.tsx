@@ -19,6 +19,7 @@ const UserProfile = observer(() => {
   const { mutate, cache } = useSWRConfig();
 
   const revalidate = () => {
+    console.log(cache);
     mutate(SWR_CACHE_KEY.ME);
   };
 

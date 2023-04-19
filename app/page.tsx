@@ -17,7 +17,7 @@ export default async function Page(props: Props) {
       {/* <Link href="/landing">To</Link>
       <AuthActions />
       <UserProfile /> */}
-      <ProductList products={products} />
+      <ProductList fallback={products} />
     </>
   );
 }

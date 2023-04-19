@@ -7,13 +7,17 @@ export class ProductService {
     this.client = client;
   }
 
-  fetchProducts = async (page: number = 1, pageSize: number = 25): Promise<any> => {
+  fetchProducts = async (page: number = 1, pageSize: number = 25): Promise<Product[]> => {
     try {
-      const res = await this.client.request(`https://api.escuelajs.co/api/v1/products?offset=${page - 1}&limit=${pageSize}`);
+      const res = await this.client.request(`https://api.escuelajs.co/api/v1/products?offset=${(page - 1) * pageSize}&limit=${pageSize}`);
+
+      if (page === 3) {
+        return [];
+      }
       return res;
     }
     catch(error) {
-      console.log(error, 'error')
+      return [];
       throw error;
     }
   }
