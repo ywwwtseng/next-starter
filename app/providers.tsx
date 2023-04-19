@@ -7,10 +7,10 @@ import { IClientStoreState } from '@/stores/ClientStore';
 import { serializeSwrFallback } from '@/utils/swr';
 
 interface Props {
-  children: React.ReactNode,
+  children: React.ReactNode
   initialState: {
-    client: IClientStoreState,
-    swrFallback: any[],
+    client: IClientStoreState
+    swrFallback: any[]
   }
 }
 

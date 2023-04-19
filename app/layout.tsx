@@ -10,7 +10,7 @@ export const metadata = {
 }
 
 async function fetchRequiredData(client: IClientStore) {
-  if (!client.token) {
+  if (!client.token || !client.userService) {
     return [];
   }
 
@@ -35,9 +35,9 @@ async function fetchRequiredData(client: IClientStore) {
 
 
 export default async function RootLayout({
-  children
+  children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode,
 }) {
   const cookieStore = cookies();
   const token: string | undefined = cookieStore.get('token')?.value;

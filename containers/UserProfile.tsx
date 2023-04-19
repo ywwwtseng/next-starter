@@ -5,20 +5,28 @@ import useSWR, { useSWRConfig } from 'swr';
 import { observer } from 'mobx-react-lite';
 import { StoreContext} from '@/stores';
 import { IClientStore } from '@/stores/ClientStore';
+import { UserService } from '@/services';
 import UserProfileName from '@/components/UserProfileName';
 import { SWR_CACHE_KEY } from '@/constants/swr';
 
 
 const UserProfile = observer(() => {
   const { client } = React.useContext(StoreContext) as { client: IClientStore };
-  const { data: me } = useSWR(client.token ? SWR_CACHE_KEY.ME : null, client.userService.fetchMeProfile);
-  const { data: user1 } = useSWR(client.token ? [SWR_CACHE_KEY.USERS, 1] : null, ([,id]) => client.userService.fetchUserById(id));
-  const { data: user2 } = useSWR(client.token ? [SWR_CACHE_KEY.USERS, 2] : null, ([,id]) => client.userService.fetchUserById(id));
+  const userService = client.userService as UserService;
+  const { data: me, error } = useSWR(client.token ? SWR_CACHE_KEY.ME : null, userService.fetchMeProfile);
+  const { data: user1 } = useSWR(client.token ? [SWR_CACHE_KEY.USERS, 1] : null, ([,id]) => userService.fetchUserById(id));
+  const { data: user2 } = useSWR(client.token ? [SWR_CACHE_KEY.USERS, 2] : null, ([,id]) => userService.fetchUserById(id));
   const { mutate, cache } = useSWRConfig();
 
   const revalidate = () => {
     mutate(SWR_CACHE_KEY.ME);
   };
+
+  if (error) {
+    console.log(error);
+    return null;
+  }
+
 
   return (
     <div>

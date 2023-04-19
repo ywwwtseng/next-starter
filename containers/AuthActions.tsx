@@ -11,8 +11,8 @@ const AuthActions = observer(() => {
   return (
     <div>
       {client.token}
-      <button onClick={() => client.signIn()}>Sign In</button>
-      <button onClick={() => client.logout()}>Logout</button>
+      <button onClick={() => client?.authService?.signIn()}>Sign In</button>
+      <button onClick={() => client?.authService?.logout()}>Logout</button>
     </div>
   );
 });

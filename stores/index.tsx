@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { isServer } from '@/utils/common';
 import { ClientStore, IClientStoreState } from './ClientStore';
 
 interface Props {
@@ -18,8 +19,11 @@ export const StoreContext = React.createContext<Stores>({});
 StoreContext.displayName = 'StoreContext';
 
 export const StoreProvider = ({ children, initialState }: Props) => {
+  const client = new ClientStore(initialState.client);
+  client.errorRetryCount = isServer() ? 0 : 3;
+  
   const stores = {
-    client: new ClientStore(initialState.client)
+    client,
   };
 
 

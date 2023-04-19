@@ -3,8 +3,8 @@
 ```js
 // @ts-ignore
 interface Window {
-  google: any;
-  AppleID: any;
+  google: any
+  AppleID: any
 }
 
 enum TokenType {
@@ -16,9 +16,6 @@ enum IdentityProvider {
   GOOGLE = 'google',
   APPLE = 'apple',
 }
-
-// type IdentityProviderStrings = keyof typeof IdentityProvider;
-// type TokenTypeStrings = keyof typeof TokenType;
 
 interface ITokenResponse {
   uid: string
