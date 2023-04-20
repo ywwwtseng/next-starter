@@ -3,11 +3,11 @@ import mem from 'mem';
 import { IClientStore } from '@/stores/ClientStore';
 export class AuthService {
   client: IClientStore;
-  memoizedRefreshToken: any;
+  refreshToken: any;
 
   constructor(client: IClientStore) {
     this.client = client;
-    this.memoizedRefreshToken = mem(this.refreshToken, { maxAge: 10_000 });
+    this.refreshToken = mem(this._refreshToken, { maxAge: 10_000 });
   }
 
   signIn = async (): Promise<void> => {
@@ -28,7 +28,7 @@ export class AuthService {
     }
   }
 
-  refreshToken = async (): Promise<void> => {
+  _refreshToken = async (): Promise<void> => {
     try {
       const res = await request()('/api/token', { method: 'POST', body: JSON.stringify({ grant_type: 'refresh_token' }) });
       this.client.setToken(res.data.access_token);
