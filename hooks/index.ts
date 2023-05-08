@@ -15,6 +15,7 @@ export function useInfinite<T>(
 ): {
   data: T[],
   next: () => void,
+  isLoading: boolean,
   isLoadingMore: boolean,
   isReachingEnd: boolean,
   isRefreshing: boolean
@@ -38,11 +39,18 @@ export function useInfinite<T>(
   const isEmpty = data?.[0]?.length === 0;
   const isReachingEnd = isEmpty || !!(data && data[data.length - 1]?.length < pageSize);
   const isRefreshing = isValidating && !!data && data.length === size;
-  const next = () => setSize(size + 1);
+  const next = () => {
+    if (isValidating) {
+      return
+    }
+
+    setSize(size + 1)
+  };
 
   return {
     data: data ? data.flat() : [],
     next,
+    isLoading,
     isLoadingMore,
     isReachingEnd,
     isRefreshing,
